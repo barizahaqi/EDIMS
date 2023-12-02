@@ -1,4 +1,4 @@
-package com.bangkit.edims.ui.screens.splash
+package com.bangkit.edims.presentation.ui.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import com.bangkit.edims.R
-import com.bangkit.edims.ui.theme.PaleLeaf
-import com.bangkit.edims.ui.theme.Sulu
-import com.bangkit.edims.ui.theme.White
+import com.bangkit.edims.presentation.theme.PaleLeaf
+import com.bangkit.edims.presentation.theme.Sulu
+import com.bangkit.edims.presentation.theme.White
 import kotlinx.coroutines.delay
 
 @Composable

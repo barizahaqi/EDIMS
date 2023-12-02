@@ -1,4 +1,4 @@
-package com.bangkit.edims.ui.theme
+package com.bangkit.edims.presentation.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

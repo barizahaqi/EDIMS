@@ -1,4 +1,4 @@
-package com.bangkit.edims.ui.theme
+package com.bangkit.edims.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -86,7 +86,7 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = poppinsFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
     ),
@@ -99,7 +99,7 @@ val Typography = Typography(
     ),
     bodySmall = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.4.sp

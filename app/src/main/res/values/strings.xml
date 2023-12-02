@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EDIMS</string>
+    <string name="email_validation">Email is not valid</string>
+    <string name="password_validation">Password must be at least 8 characters</string>
+    <string name="username_validation">Username must be at least 6 characters</string>
+    <string name="empty_validation">This field cannot be empty</string>
+    <string name="confirm_password_validation">Confirm Password do not match</string>
 </resources>
