@@ -1,4 +1,4 @@
-package com.bangkit.edims.presentation.ui.signup
+package com.bangkit.edims.presentation.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -34,22 +34,16 @@ import com.bangkit.edims.presentation.components.text.CustomTextField
 import com.bangkit.edims.presentation.theme.PaleLeaf
 
 @Composable
-fun SignUpScreen(
-    viewModel: SignUpViewModel = SignUpViewModel(),
+fun LoginScreen(
+    viewModel: LoginViewModel = LoginViewModel(),
 ) {
     val message by viewModel.message.observeAsState()
-
-    var username by remember { mutableStateOf("") }
-    var usernameValid by remember { mutableStateOf(true) }
 
     var email by remember { mutableStateOf("") }
     var emailValid by remember { mutableStateOf(true) }
 
     var password by remember { mutableStateOf("") }
     var passwordValid by remember { mutableStateOf(true) }
-
-    var confirmPassword by remember { mutableStateOf("") }
-    var confirmPasswordValid by remember { mutableStateOf(true) }
 
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -59,24 +53,14 @@ fun SignUpScreen(
             .verticalScroll(rememberScrollState()),
     ) {
         Image(
-            painterResource(R.drawable.signup_logo),
-            "Logo Sign Up",
+            painterResource(R.drawable.login_logo),
+            "Logo Login",
             modifier = Modifier
                 .size(250.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Text(text = "Sign Up", style = MaterialTheme.typography.headlineLarge)
+        Text(text = "Login", style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.height(16.dp))
-        CustomTextField(
-            placeholder = "Username",
-            text = username,
-            errorMessage = stringResource(R.string.username_validation),
-            onValueChange = {
-                username = it
-                usernameValid = Validation.validateUsername(username)
-            },
-            isError = !usernameValid
-        )
         CustomTextField(
             placeholder = "Email",
             text = email,
@@ -117,48 +101,18 @@ fun SignUpScreen(
                     }
                 }
             })
-        CustomTextField(placeholder = "Confirm Password",
-            text = confirmPassword,
-            errorMessage = stringResource(R.string.confirm_password_validation),
-            onValueChange = {
-                confirmPassword = it
-                confirmPasswordValid = confirmPassword == password
-            },
-            isError = !confirmPasswordValid,
-            isVisible = isPasswordVisible,
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        isPasswordVisible = !isPasswordVisible
-                    }
-                ) {
-                    if (isPasswordVisible) {
-                        Image(
-                            painterResource(R.drawable.ic_visible),
-                            "Password Visibility Toggle",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    } else {
-                        Image(
-                            painterResource(R.drawable.ic_non_visible),
-                            "Password Visibility Toggle",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            })
         if (message != null) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = message!!, style = MaterialTheme.typography.bodyLarge)
         }
-        CustomContainedButton(text = "Sign Up", onClick = {
-            viewModel.signUp(username, email, password, confirmPassword)
+        CustomContainedButton(text = "Login", onClick = {
+            viewModel.login(email, password)
         })
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Already have an account? ", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Don't have an account? ", style = MaterialTheme.typography.bodyLarge)
             ClickableText(
                 modifier = Modifier.drawBehind {
                     val strokeWidthPx = 1.dp.toPx()
@@ -170,11 +124,10 @@ fun SignUpScreen(
                         end = Offset(size.width, verticalOffset)
                     )
                 },
-                text = AnnotatedString("Login"),
+                text = AnnotatedString("Sign Up"),
                 onClick = {},
                 style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.secondary)
             )
         }
     }
 }
-
