@@ -1,4 +1,4 @@
-package com.example.myproject.utils
+package com.bangkit.edims.core.utils
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
