@@ -1,4 +1,4 @@
-package com.example.myproject.ui.theme
+package com.bangkit.edims.presentation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
