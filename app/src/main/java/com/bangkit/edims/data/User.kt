@@ -1,4 +1,4 @@
-package package com.bangkit.edims.data
+package com.bangkit.edims.data
 
 import com.bangkit.edims.database.Product
 
