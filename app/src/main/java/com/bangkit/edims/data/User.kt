@@ -1,6 +1,6 @@
-package com.example.myproject.data
+package package com.bangkit.edims.data
 
-import com.example.myproject.database.Product
+import com.bangkit.edims.database.Product
 
 data class User(
     val item: List<Product>?,
