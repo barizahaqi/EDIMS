@@ -1,6 +1,7 @@
 package com.bangkit.edims.presentation.ui.add
 
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,42 +46,51 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.bangkit.edims.R
 import com.bangkit.edims.database.Product
-import com.bangkit.edims.components.CameraCapture
-import com.bangkit.edims.components.CategoryItem
-import com.bangkit.edims.theme.MyProjectTheme
-import com.bangkit.edims.theme.Orange2
-import com.bangkit.edims.theme.Shapes
+import com.bangkit.edims.presentation.components.camera.CameraCapture
+import com.bangkit.edims.presentation.components.category.CategoryItem
+import com.bangkit.edims.presentation.components.shimmer.AnimatedShimmer
+import com.bangkit.edims.presentation.theme.MyProjectTheme
+import com.bangkit.edims.presentation.theme.PaleLeaf
+import com.bangkit.edims.presentation.theme.Shapes
+import com.bangkit.edims.presentation.theme.Tacao
 import com.bangkit.edims.core.utils.DatePickerDialog
 
 @Composable
 fun AddScreen(
     addViewModel: AddViewModel,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    showSnackbar: (String, SnackbarDuration) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(colorResource(R.color.orange1))
     ) {
         AddContent(
             onSaveDataClick = addViewModel::insert,
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            showSnackbar = showSnackbar
         )
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddContent(
     onSaveDataClick: (Product) -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    showSnackbar: (String, SnackbarDuration) -> Unit
 ) {
+    var showShimmer by remember {
+        mutableStateOf(true)
+    }
+
     var inputName by remember { mutableStateOf("") }
     var inputDate by remember { mutableStateOf("") }
     var dueDateMillis by remember {
         mutableStateOf(System.currentTimeMillis())
     }
 
-    var selectedCategory by remember { mutableStateOf("Category") }
+    var selectedCategory by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     var imageUri by remember {
@@ -116,11 +128,18 @@ fun AddContent(
                 AsyncImage(
                     model = imageUri,
                     contentDescription = "Preview Image",
-                    placeholder = painterResource(R.drawable.ic_placeholder),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(30.dp)
-                        .align(Alignment.Center),
+                        .align(Alignment.Center)
+                        .background(AnimatedShimmer(showShimmer = showShimmer)),
+                    placeholder = painterResource(R.drawable.ic_placeholder),
+                    onSuccess = {
+                        showShimmer = false
+                    },
+                    onError = {
+                        showShimmer = false
+                    },
                     error = painterResource(R.drawable.ic_placeholder)
                 )
                 FloatingActionButton(
@@ -132,12 +151,14 @@ fun AddContent(
                         .size(50.dp)
                         .align(Alignment.BottomEnd),
                     shape = CircleShape,
+                    containerColor = PaleLeaf,
+                    contentColor = Color.White
                 ) {
                     Icon(
                         imageVector = Icons.Default.PhotoCamera,
                         contentDescription = "Camera",
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(30.dp),
                     )
                 }
             }
@@ -183,7 +204,7 @@ fun AddContent(
                     .padding(vertical = 8.dp)
             ) {
                 OutlinedTextField(
-                    value = selectedCategory,
+                    value = selectedCategory.ifEmpty { "Category" },
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
@@ -217,20 +238,31 @@ fun AddContent(
             }
             Button(
                 onClick = {
-                    val product = Product(
-                        name = inputName,
-                        category = selectedCategory,
-                        image = imageUri.toString(),
-                        dueDateMillis = dueDateMillis,
-                    )
-                    onSaveDataClick(product)
-                    navigateToHome()
+                    if (inputName.isNotEmpty() && selectedCategory.isNotEmpty() && imageUri != null) {
+                        val product = Product(
+                            name = inputName,
+                            category = selectedCategory,
+                            image = imageUri.toString(),
+                            dueDateMillis = dueDateMillis,
+                        )
+                        onSaveDataClick(product)
+                        navigateToHome()
+                        showSnackbar(
+                            "Success",
+                            SnackbarDuration.Short
+                        )
+                    } else {
+                        showSnackbar(
+                            "Please fill all the blank",
+                            SnackbarDuration.Short
+                        )
+                    }
                 },
                 shape = Shapes.medium,
                 modifier = Modifier
                     .width(120.dp)
                     .height(40.dp),
-                colors = ButtonDefaults.buttonColors(Orange2)
+                colors = ButtonDefaults.buttonColors(Tacao)
             ) {
                 Text(
                     text = "Save",
@@ -249,21 +281,10 @@ fun AddContent(
 
     if (showDatePicker) {
         DatePickerDialog(
+            initialDateMillis = dueDateMillis,
             onDateSelected = { inputDate = it },
             onDateMillisSelected = { dueDateMillis = it },
             onDismiss = { showDatePicker = false }
-        )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun AddContentScreenPreview() {
-    MyProjectTheme {
-        AddContent(
-            onSaveDataClick = {},
-            navigateToHome = {}
         )
     }
 }
