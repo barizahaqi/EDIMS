@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AddViewModel(private val repository: ProductRepository) : ViewModel() {
-    private val _result : MutableStateFlow<Result<Product>> = MutableStateFlow(Result.Loading)
-    val result : StateFlow<Result<Product>> get() = _result
 
     fun insert(product: Product) {
         viewModelScope.launch {
