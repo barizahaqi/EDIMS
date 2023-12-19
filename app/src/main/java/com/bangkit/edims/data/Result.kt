@@ -1,4 +1,4 @@
-package com.example.myproject.data
+package com.bangkit.edims.data
 
 sealed class Result<out T : Any?> {
     object Loading : Result<Nothing>()
