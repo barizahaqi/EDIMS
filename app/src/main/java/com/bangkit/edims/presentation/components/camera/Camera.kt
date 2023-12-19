@@ -1,4 +1,4 @@
-package com.bangkit.edims.presentation.component.camera
+package com.bangkit.edims.presentation.components.camera
 
 import android.Manifest
 import android.content.Context
