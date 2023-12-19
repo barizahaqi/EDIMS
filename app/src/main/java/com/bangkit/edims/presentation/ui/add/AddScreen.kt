@@ -1,4 +1,4 @@
-package com.example.myproject.ui.screen.add
+package com.bangkit.edims.presentation.ui.add
 
 import android.net.Uri
 import androidx.compose.foundation.border
@@ -41,14 +41,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
-import com.example.myproject.R
-import com.example.myproject.database.Product
-import com.example.myproject.ui.components.CameraCapture
-import com.example.myproject.ui.components.CategoryItem
-import com.example.myproject.ui.theme.MyProjectTheme
-import com.example.myproject.ui.theme.Orange2
-import com.example.myproject.ui.theme.Shapes
-import com.example.myproject.utils.DatePickerDialog
+import com.bangkit.edims.R
+import com.bangkit.edims.database.Product
+import com.bangkit.edims.components.CameraCapture
+import com.bangkit.edims.components.CategoryItem
+import com.bangkit.edims.theme.MyProjectTheme
+import com.bangkit.edims.theme.Orange2
+import com.bangkit.edims.theme.Shapes
+import com.bangkit.edims.core.utils.DatePickerDialog
 
 @Composable
 fun AddScreen(
