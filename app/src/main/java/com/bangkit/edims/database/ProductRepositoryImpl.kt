@@ -1,7 +1,7 @@
-package com.example.myproject.database
+package com.bangkit.edims.database
 
-import com.example.myproject.utils.Filter
-import com.example.myproject.utils.ProductFilterType
+import com.bangkit.edims.core.utils.Filter
+import com.bangkit.edims.core.utils.ProductFilterType
 import kotlinx.coroutines.flow.Flow
 
 class ProductRepositoryImpl(private val productDao: ProductDao) : ProductRepository {
