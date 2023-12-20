@@ -46,7 +46,6 @@
     // Settings screen
     <string name="settings_turn_on_notif">Turn on notifications</string>
     <string name="settings_notify_when">Notify when </string>
-    <string name="help_center_title">Help Center</string>
     
     // Snackbar
     <string name="add_product_success">Success</string>
