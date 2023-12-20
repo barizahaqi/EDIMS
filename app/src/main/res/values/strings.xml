@@ -5,4 +5,52 @@
     <string name="username_validation">Username must be at least 6 characters</string>
     <string name="empty_validation">This field cannot be empty</string>
     <string name="confirm_password_validation">Confirm Password do not match</string>
+
+    // Permission
+    <string name="permission_label">Please grant the permission</string>
+    
+    // Home screen
+    <string name="home_title">Expiration Product</string>
+    <string name="home_greeting">Hello</string>
+    <string name="home_default_name">Guest</string>
+    <string name="card_status_bad">Gone Bad</string>
+    <string name="card_status_soon">Expire Soon</string>
+    <string name="card_status_good">Good</string>
+    <string name="card_status_fresh">Fresh</string>
+
+    // Add screen
+    <string name="add_title">Add Product</string>
+    <string name="add_text_field_name">Product name</string>
+    <string name="add_text_field_date">Expired date</string>
+    <string name="add_category_label">Category</string>
+    <string name="cd_profile_image">Profile Image</string>
+    <string name="add_save_btn">Save</string>
+
+    // Detail screen
+    <string name="detail_title">Detail</string>
+    <string name="detail_label_category">Category</string>
+    <string name="detail_label_date_expired">Date Expired</string>
+    
+    // Help Center screen
+    <string name="help_center_title">Help Center</string>
+    <string name="faq_title">Frequently Asked Questions</string>
+    <string name="contact_us_btn">Contact Us</string>
+
+    // Profile screen
+    <string name="profile_title">Profile</string>
+    <string name="profile_greetings">Guest</string>
+    <string name="profile_settings_items">Settings</string>
+    <string name="profile_help_center_items">Help Center</string>
+    <string name="profile_logout_items">Log Out</string>
+
+    // Settings screen
+    <string name="settings_turn_on_notif">Turn on notifications</string>
+    <string name="settings_notify_when">Notify when </string>
+    <string name="help_center_title">Help Center</string>
+    
+    // Snackbar
+    <string name="add_product_success">Success</string>
+    <string name="add_product_error">Please fill all the blank</string>
+    <string name="detail_product_delete">Deleting...</string>
+    
 </resources>
