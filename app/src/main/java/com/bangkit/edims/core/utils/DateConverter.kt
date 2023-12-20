@@ -12,13 +12,28 @@ object DateConverter {
         return dateFormat.format(calendar.time)
     }
 
-    fun remainingTime(timeMillis: Long): Long {
+    private fun remainingTime(timeMillis: Long): Long {
         val currentTime = System.currentTimeMillis()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timeMillis
 
-        val diffMillis = calendar.timeInMillis - currentTime
+        return calendar.timeInMillis - currentTime
+    }
+    
+    fun remainingHours(timeMillis: Long): Long {
+        val diffMillis = remainingTime(timeMillis)
+
+        return diffMillis / (60 * 60 * 1000)
+    }
+
+    fun remainingDays(timeMillis: Long): Long {
+        val diffMillis = remainingTime(timeMillis)
 
         return diffMillis / (24 * 60 * 60 * 1000)
+    }
+
+    fun dayToMillis(days: Long): Long {
+        val millisInDay = 24 * 60 * 60 * 1000
+        return days * millisInDay
     }
 }
