@@ -12,10 +12,12 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,15 +31,58 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.bangkit.edims.R
 import com.bangkit.edims.core.utils.Validation
+import com.bangkit.edims.data.Result
 import com.bangkit.edims.presentation.components.button.CustomContainedButton
+import com.bangkit.edims.presentation.components.loading.ShowLoading
 import com.bangkit.edims.presentation.components.text.CustomTextField
 import com.bangkit.edims.presentation.theme.PaleLeaf
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = LoginViewModel(),
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel,
+    showSnackbar: (String, SnackbarDuration) -> Unit,
+    navigateToSignUp: () -> Unit,
+    onLoginSuccess: () -> Unit,
 ) {
-    val message by viewModel.message.observeAsState()
+    val result by viewModel.result.collectAsState()
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
+    if (showLoading) {
+        ShowLoading()
+    }
+
+    LaunchedEffect(result) {
+        when (result) {
+            Result.Loading -> {}
+
+            is Result.Success -> {
+                val loginResult = (result as Result.Success).data
+                val resultMessage = loginResult.message
+                showSnackbar(resultMessage, SnackbarDuration.Short)
+                showLoading = false
+
+                val dataUser = loginResult.user
+                val userId = dataUser.id
+                val username = dataUser.username
+                val email = dataUser.email
+                val token = loginResult.token
+                viewModel.saveLoginData(userId, username, email, token)
+                onLoginSuccess()
+            }
+
+            is Result.Error -> {
+                val errorMessage = (result as Result.Error).errorMessage
+                showSnackbar(errorMessage, SnackbarDuration.Short)
+                showLoading = false
+                viewModel.resetResult()
+            }
+
+        }
+    }
 
     var email by remember { mutableStateOf("") }
     var emailValid by remember { mutableStateOf(true) }
@@ -48,7 +93,7 @@ fun LoginScreen(
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(all = 16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
@@ -81,11 +126,9 @@ fun LoginScreen(
             isError = !passwordValid,
             isVisible = isPasswordVisible,
             trailingIcon = {
-                IconButton(
-                    onClick = {
-                        isPasswordVisible = !isPasswordVisible
-                    }
-                ) {
+                IconButton(onClick = {
+                    isPasswordVisible = !isPasswordVisible
+                }) {
                     if (isPasswordVisible) {
                         Image(
                             painterResource(R.drawable.ic_visible),
@@ -101,13 +144,14 @@ fun LoginScreen(
                     }
                 }
             })
-        if (message != null) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = message!!, style = MaterialTheme.typography.bodyLarge)
-        }
-        CustomContainedButton(text = "Login", onClick = {
-            viewModel.login(email, password)
-        })
+        CustomContainedButton(
+            isEnabled = emailValid && passwordValid && (email != "") && (password != ""),
+            text = "Login",
+            onClick = {
+                viewModel.loginUser(email, password)
+                showLoading = true
+            },
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -116,7 +160,7 @@ fun LoginScreen(
             ClickableText(
                 modifier = Modifier.drawBehind {
                     val strokeWidthPx = 1.dp.toPx()
-                    val verticalOffset = size.height - size.height/3
+                    val verticalOffset = size.height - size.height / 3
                     drawLine(
                         color = PaleLeaf,
                         strokeWidth = strokeWidthPx,
@@ -125,8 +169,10 @@ fun LoginScreen(
                     )
                 },
                 text = AnnotatedString("Sign Up"),
-                onClick = {},
-                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.secondary)
+                onClick = {
+                    navigateToSignUp()
+                },
+                style = MaterialTheme.typography.bodyLarge.copy(color = PaleLeaf)
             )
         }
     }

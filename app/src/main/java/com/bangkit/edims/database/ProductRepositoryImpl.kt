@@ -225,24 +225,12 @@ class ProductRepositoryImpl(
         return preference.getNotificationSettings
     }
 
-    override suspend fun saveAutoDeleteSettings(status: Boolean) {
-        preference.saveAutoDeleteSettings(status)
-    }
-
-    override fun getAutoDeleteSettings(): Flow<Boolean> {
-        return preference.getAutoDeleteSettings
-    }
-
     override suspend fun saveLoginData(user: User) {
         userPreference.saveLoginData(user)
     }
 
     override suspend fun clearLoginData() {
         userPreference.clearLoginData()
-    }
-
-    override suspend fun changeImageProfile(imageProfile: String) {
-        userPreference.changeImageProfile(imageProfile)
     }
 
     override fun getUserData(): Flow<User> {

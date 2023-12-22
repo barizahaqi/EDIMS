@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,11 +49,14 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.bangkit.edims.R
 import com.bangkit.edims.core.utils.DatePickerDialog
+import com.bangkit.edims.data.Result
 import com.bangkit.edims.database.Product
 import com.bangkit.edims.presentation.components.camera.CameraCapture
 import com.bangkit.edims.presentation.components.category.CategoryItem
+import com.bangkit.edims.presentation.components.loading.ShowLoading
 import com.bangkit.edims.presentation.components.shimmer.AnimatedShimmer
 import com.bangkit.edims.presentation.theme.Beige
+import com.bangkit.edims.presentation.theme.MyProjectTheme
 import com.bangkit.edims.presentation.theme.PaleLeaf
 import com.bangkit.edims.presentation.theme.Shapes
 import com.bangkit.edims.presentation.theme.Tacao
@@ -61,6 +67,37 @@ fun AddScreen(
     navigateToHome: () -> Unit,
     showSnackbar: (String, SnackbarDuration) -> Unit
 ) {
+    val resultApi by addViewModel.resultApi.collectAsState()
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
+    if (showLoading) {
+        ShowLoading()
+    }
+
+    when (resultApi) {
+        Result.Loading -> {
+            showLoading = false
+        }
+
+        is Result.Success -> {
+            val uploadResult = (resultApi as Result.Success).data
+            val resultMessage = uploadResult.message
+            showSnackbar(resultMessage.toString(), SnackbarDuration.Short)
+            showLoading = false
+            navigateToHome()
+        }
+
+        is Result.Error -> {
+            val errorMessage = (resultApi as Result.Error).errorMessage
+            showSnackbar(errorMessage, SnackbarDuration.Short)
+            showLoading = false
+            addViewModel.resetResult()
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,17 +106,24 @@ fun AddScreen(
         AddContent(
             onSaveDataClick = addViewModel::insert,
             navigateToHome = navigateToHome,
+            showLoading = {
+                showLoading = it
+            },
             showSnackbar = showSnackbar
         )
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddContent(
     onSaveDataClick: (Product) -> Unit,
     navigateToHome: () -> Unit,
+    showLoading: (Boolean) -> Unit,
     showSnackbar: (String, SnackbarDuration) -> Unit
 ) {
+    LocalContext.current
+
     var showShimmer by remember {
         mutableStateOf(true)
     }
@@ -111,7 +155,7 @@ fun AddContent(
                 .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box (
+            Box(
                 Modifier.fillMaxWidth()
             ) {
                 Icon(
@@ -125,7 +169,7 @@ fun AddContent(
                         .align(Alignment.TopStart)
                 )
                 Text(
-                    text = "Add Product",
+                    text = stringResource(id = R.string.add_title),
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -179,7 +223,7 @@ fun AddContent(
             }
             OutlinedTextField(
                 value = inputName,
-                label = { Text(text = "Name") },
+                label = { Text(text = stringResource(id = R.string.add_text_field_name)) },
                 onValueChange = { newInput ->
                     inputName = newInput
                 },
@@ -194,7 +238,7 @@ fun AddContent(
             ) {
                 OutlinedTextField(
                     value = inputDate,
-                    label = { Text(text = "Date") },
+                    label = { Text(text = stringResource(id = R.string.add_text_field_date)) },
                     onValueChange = {},
                     readOnly = true,
                     shape = Shapes.medium,
@@ -219,7 +263,7 @@ fun AddContent(
                     .padding(vertical = 8.dp)
             ) {
                 OutlinedTextField(
-                    value = selectedCategory.ifEmpty { "Category" },
+                    value = selectedCategory.ifEmpty { stringResource(id = R.string.add_category_label) },
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
@@ -253,19 +297,31 @@ fun AddContent(
             }
             Button(
                 onClick = {
+                    showLoading(true)
                     if (inputName.isNotEmpty() && selectedCategory.isNotEmpty() && imageUri != null) {
-                        val product = Product(
+//                        val imageFile = imageToFile(context, imageUri!!)
+//                        val nameReq = inputName.toRequestBody("text/plain".toMediaType())
+//                        val categoryReq = selectedCategory.toRequestBody("text/plain".toMediaType())
+//                        val date = dueDateMillis.toString().toRequestBody("text/plain".toMediaType())
+//
+//                        onSaveApiClick(
+//                            nameReq,
+//                            imageFile,
+//                            categoryReq,
+//                            date
+//                        )
+                        val product = Product (
                             name = inputName,
-                            category = selectedCategory,
                             image = imageUri.toString(),
+                            category = selectedCategory,
                             dueDateMillis = dueDateMillis,
-                        )
+                            )
                         onSaveDataClick(product)
-                        navigateToHome()
                         showSnackbar(
                             "Success",
                             SnackbarDuration.Short
                         )
+                        navigateToHome()
                     } else {
                         showSnackbar(
                             "Please fill all the blank",
@@ -280,7 +336,7 @@ fun AddContent(
                 colors = ButtonDefaults.buttonColors(Tacao)
             ) {
                 Text(
-                    text = "Save",
+                    text = stringResource(id = R.string.add_save_btn),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -300,6 +356,22 @@ fun AddContent(
             onDateSelected = { inputDate = it },
             onDateMillisSelected = { dueDateMillis = it },
             onDismiss = { showDatePicker = false }
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun AddContentScreenPreview() {
+    MyProjectTheme {
+        AddContent(
+            onSaveDataClick = {},
+            navigateToHome = {},
+            showLoading = {},
+            showSnackbar = { _, _ ->
+
+            }
         )
     }
 }

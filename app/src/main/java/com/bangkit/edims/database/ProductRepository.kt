@@ -44,10 +44,6 @@ interface ProductRepository{
 
     fun getNotificationSettings() : Flow<Boolean>
 
-    suspend fun saveAutoDeleteSettings(status: Boolean)
-
-    fun getAutoDeleteSettings() : Flow<Boolean>
-
     suspend fun saveLoginData(user : User)
 
     suspend fun clearLoginData()
@@ -55,6 +51,4 @@ interface ProductRepository{
     fun getUserData() : Flow<User>
 
     fun getToken() : Flow<String>
-
-    suspend fun changeImageProfile (imageProfile: String)
 }
