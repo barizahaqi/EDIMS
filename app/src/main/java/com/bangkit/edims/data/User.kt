@@ -1,10 +1,9 @@
 package com.bangkit.edims.data
 
-import com.bangkit.edims.database.Product
-
 data class User(
-    val item: List<Product>?,
+    val userId: Int?,
     val username: String?,
-    val profileIcon: String?,
     val email: String?,
+    val imageProfile: String?,
+    val token: String?,
 )

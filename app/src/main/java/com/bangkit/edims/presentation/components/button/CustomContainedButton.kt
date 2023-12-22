@@ -38,6 +38,7 @@ fun CustomContainedButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = color,
                 contentColor = textColor,
+                disabledContainerColor = color.copy(alpha = 0.7f)
             ),
             modifier = Modifier
                 .fillMaxWidth()

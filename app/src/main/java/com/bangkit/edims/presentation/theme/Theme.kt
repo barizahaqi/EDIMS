@@ -12,34 +12,29 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Beige,
-    secondary = PaleLeaf,
-    tertiary = Tacao,
-    background = Beige,
-    surface = PaleLeaf,
-    onPrimary = Black,
-    onSecondary = Black,
-    onTertiary = Black,
-    onBackground = Black,
-    onSurface = Black,
+    primary = Green1,
+    secondary = Orange1,
+    tertiary = Orange2
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Beige,
-    secondary = PaleLeaf,
-    tertiary = Tacao,
-    background = Beige,
-    surface = PaleLeaf,
-    onPrimary = Black,
-    onSecondary = Black,
-    onTertiary = Black,
-    onBackground = Black,
-    onSurface = Black,
+    primary = Green1,
+    secondary = Orange1,
+    tertiary = Orange2
 
+    /* Other default colors to override
+    background = Color(0xFFFFFBFE),
+    surface = Color(0xFFFFFBFE),
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color(0xFF1C1B1F),
+    onSurface = Color(0xFF1C1B1F),
+    */
 )
 
 @Composable
-fun EDIMSTheme(
+fun MyProjectTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -51,8 +46,7 @@ fun EDIMSTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = SurfCrest.toArgb()
-
+            window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

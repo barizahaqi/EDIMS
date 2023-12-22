@@ -18,7 +18,10 @@ import com.bangkit.edims.presentation.theme.White
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    modifier: Modifier = Modifier,
+    navigateNext: () -> Unit
+) {
     val gradiantBackground = Brush.horizontalGradient(
         0.0f to PaleLeaf,
         1.0f to Sulu,
@@ -26,7 +29,7 @@ fun SplashScreen() {
         endX = 1000.0f
     )
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(gradiantBackground),
         contentAlignment = Alignment.Center
@@ -35,5 +38,6 @@ fun SplashScreen() {
     }
     LaunchedEffect(Unit) {
         delay(2000)
+        navigateNext()
     }
 }
