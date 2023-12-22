@@ -8,7 +8,7 @@
 
     // Permission
     <string name="permission_label">Please grant the permission</string>
-    
+
     // Home screen
     <string name="home_title">Expiration Product</string>
     <string name="home_greeting">Hello</string>
@@ -30,7 +30,7 @@
     <string name="detail_title">Detail</string>
     <string name="detail_label_category">Category</string>
     <string name="detail_label_date_expired">Date Expired</string>
-    
+
     // Help Center screen
     <string name="help_center_title">Help Center</string>
     <string name="faq_title">Frequently Asked Questions</string>
@@ -45,10 +45,9 @@
 
     // Settings screen
     <string name="settings_turn_on_notif">Turn on notifications</string>
-    
+
     // Snackbar
     <string name="add_product_success">Success</string>
     <string name="add_product_error">Please fill all the blank</string>
     <string name="detail_product_delete">Deleting...</string>
-    
 </resources>

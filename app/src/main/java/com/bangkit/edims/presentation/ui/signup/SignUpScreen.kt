@@ -1,6 +1,7 @@
 package com.bangkit.edims.presentation.ui.signup
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +13,12 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,21 +26,60 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.bangkit.edims.R
 import com.bangkit.edims.core.utils.Validation
+import com.bangkit.edims.data.Result
 import com.bangkit.edims.presentation.components.button.CustomContainedButton
+import com.bangkit.edims.presentation.components.loading.ShowLoading
 import com.bangkit.edims.presentation.components.text.CustomTextField
 import com.bangkit.edims.presentation.theme.PaleLeaf
 
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel = SignUpViewModel(),
+    viewModel: SignUpViewModel,
+    showSnackbar: (String, SnackbarDuration) -> Unit,
+    navigateToLogin: () -> Unit,
 ) {
-    val message by viewModel.message.observeAsState()
+    val result by viewModel.result.collectAsState()
+
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
+    if (showLoading) {
+        ShowLoading(
+            modifier = Modifier
+                .zIndex(2f)
+                .background(Color.Gray.copy(alpha = 0.2f))
+        )
+    }
+
+    LaunchedEffect(result) {
+        when (result) {
+            Result.Loading -> {}
+
+            is Result.Success -> {
+                val signupResult = (result as Result.Success).data
+                showSnackbar(signupResult.message, SnackbarDuration.Short)
+                showLoading = false
+                navigateToLogin()
+            }
+
+            is Result.Error -> {
+                val errorMessage = (result as Result.Error).errorMessage
+                showSnackbar(errorMessage, SnackbarDuration.Short)
+                showLoading = false
+                viewModel.resetResult()
+            }
+        }
+    }
+
 
     var username by remember { mutableStateOf("") }
     var usernameValid by remember { mutableStateOf(true) }
@@ -53,6 +95,7 @@ fun SignUpScreen(
 
     var isPasswordVisible by remember { mutableStateOf(false) }
 
+    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .padding(all = 16.dp)
@@ -125,14 +168,14 @@ fun SignUpScreen(
                 confirmPasswordValid = confirmPassword == password
             },
             isError = !confirmPasswordValid,
-            isVisible = isPasswordVisible,
+            isVisible = isConfirmPasswordVisible,
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        isPasswordVisible = !isPasswordVisible
+                        isConfirmPasswordVisible = !isConfirmPasswordVisible
                     }
                 ) {
-                    if (isPasswordVisible) {
+                    if (isConfirmPasswordVisible) {
                         Image(
                             painterResource(R.drawable.ic_visible),
                             "Password Visibility Toggle",
@@ -147,13 +190,13 @@ fun SignUpScreen(
                     }
                 }
             })
-        if (message != null) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = message!!, style = MaterialTheme.typography.bodyLarge)
-        }
-        CustomContainedButton(text = "Sign Up", onClick = {
-            viewModel.signUp(username, email, password, confirmPassword)
-        })
+        CustomContainedButton(
+            isEnabled = usernameValid && emailValid && passwordValid && confirmPasswordValid && (username != "") && (email != "") && (password != "") && (confirmPassword != ""),
+            text = "Sign Up",
+            onClick = {
+                viewModel.signUp(username, email, password)
+                showLoading = true
+            })
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -162,7 +205,7 @@ fun SignUpScreen(
             ClickableText(
                 modifier = Modifier.drawBehind {
                     val strokeWidthPx = 1.dp.toPx()
-                    val verticalOffset = size.height - size.height/3
+                    val verticalOffset = size.height - size.height / 3
                     drawLine(
                         color = PaleLeaf,
                         strokeWidth = strokeWidthPx,
@@ -171,10 +214,9 @@ fun SignUpScreen(
                     )
                 },
                 text = AnnotatedString("Login"),
-                onClick = {},
-                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.secondary)
+                onClick = { navigateToLogin() },
+                style = MaterialTheme.typography.bodyLarge.copy(color = PaleLeaf)
             )
         }
     }
 }
-

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -74,16 +76,14 @@ fun DetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Detail")
+                    Text(text = stringResource(id = R.string.detail_title))
                 },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
                         modifier = Modifier
-                            .clickable(
-                                enabled = buttonStatus
-                            ) {
+                            .clickable{
                                 navigateBack(null)
                             }
                     )
@@ -134,7 +134,18 @@ fun DetailScreen(
             }
 
             is Result.Error -> {
-                navigateBack(null)
+                buttonStatus = false
+                val errorMessage = (result as Result.Error).errorMessage
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = errorMessage,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                }
             }
         }
     }
@@ -195,13 +206,13 @@ private fun DetailContent(
             )
             ProductInfo(
                 icon = Icons.Default.Category,
-                label = "Category",
+                label = stringResource(id = R.string.detail_label_category),
                 value = category,
                 style = MaterialTheme.typography.bodyLarge
             )
             ProductInfo(
                 icon = Icons.Default.DateRange,
-                label = "Date Expired",
+                label = stringResource(id = R.string.detail_label_date_expired),
                 value = date,
                 style = MaterialTheme.typography.bodyLarge
             )

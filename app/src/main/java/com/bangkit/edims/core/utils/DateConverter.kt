@@ -19,7 +19,7 @@ object DateConverter {
 
         return calendar.timeInMillis - currentTime
     }
-    
+
     fun remainingHours(timeMillis: Long): Long {
         val diffMillis = remainingTime(timeMillis)
 
