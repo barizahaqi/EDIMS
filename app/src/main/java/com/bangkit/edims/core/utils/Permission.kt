@@ -12,7 +12,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 fun Permission(
     permission: String = android.Manifest.permission.CAMERA,
-    rationale: String = "This permission is important for this app. Please grant the permission.",
+    rationale: String = "Please grant the permission.",
     permissionNotAvailableContent: @Composable () -> Unit = { },
     content: @Composable () -> Unit = { }
 ) {

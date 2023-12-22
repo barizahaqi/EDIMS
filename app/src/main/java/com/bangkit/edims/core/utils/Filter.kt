@@ -1,6 +1,7 @@
 package com.bangkit.edims.core.utils
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.bangkit.edims.core.utils.DateConverter.dayToMillis
 
 object Filter {
 
@@ -27,10 +28,5 @@ object Filter {
         }
         simpleQuery.append("ORDER BY dueDateMillis ASC")
         return SimpleSQLiteQuery(simpleQuery.toString())
-    }
-
-    private fun dayToMillis(days: Long): Long {
-        val millisInDay = 24 * 60 * 60 * 1000
-        return days * millisInDay
     }
 }
